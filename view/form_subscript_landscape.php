@@ -6,18 +6,18 @@
 		</p></td>
 	</tr>
 	<tr>
-		<td style="padding: 10px;"><span style="font-size: 65%;">' . msg('name') . '</span>
-		<input type="text" name="news_name" class="form-control" style="width:100%;" placeholder="Nome*">
+		<td style="padding: 10px;"><span style="font-size: 65%;">Nome completo</span>
+		<input type="text" name="news_name" class="form-control" style="width:100%;" placeholder="Nome completo">
 		</td>
 	</tr>
 	<tr>
-		<td style="padding: 10px;"><span style="font-size: 65%;">' . msg('email') . '</span>
-		<input type="text" name="news_name" class="form-control" style="width:100%;" placeholder="Email*">
+		<td style="padding: 10px;"><span style="font-size: 65%;">email</span>
+		<input type="text" name="news_name" class="form-control" style="width:100%;" placeholder="email*">
 		</td>
 	</tr>
 	<tr>
 		<td style="padding: 10px;">
-		<input type="submit" name="news_name" class="btn btn-primary" value="Inscreva-se" style="width:100%;">
+		<input type="submit" name="news_name" class="btn btn-primary" value="Inscrever-se" style="width:100%;">
 		</td>
 	</tr>
 	<tr>

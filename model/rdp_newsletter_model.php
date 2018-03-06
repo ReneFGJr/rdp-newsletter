@@ -1,21 +1,18 @@
 <?php
 
-class rdp_newsletter {
-
-    function __construct() {
-        add_action('admin_init', array($this, 'hook_admin_init'));
-
-        if (is_admin()) {
-            add_action('admin_head', array($this, 'hook_admin_head'));
-
-            // Protection against strange schedule removal on some installations
-            if (!wp_next_scheduled('newsletter') && (!defined('WP_INSTALLING') || !WP_INSTALLING)) {
-                wp_schedule_event(time() + 30, 'newsletter', 'newsletter');
-            }
-
-            add_action('admin_menu', array($this, 'add_extensions_menu'), 90);
+class Rdp_newsletters {
+    var $update_path = 'http://www.ufrgs.br/redd/plugin/rpd_newsletter/version.php';
+    
+    function dashboard()
+        {
+            
         }
-    }
+    
+    function main_menu()
+        {
+            add_menu_page(__('RDP Newsletter', 'textdomain'), 'Newsletters', 'manage_options', 'rdp_newsletter_admin', 'rdp_newsletter_admin_home', plugins_url('rdp-newsletter/img/icon_newletter.png'), 60);
+            add_submenu_page('rdp_newsletter_admin', 'DMP Templates', 'Drashboard', 'manage_options', 'rdp_dashboard', 'rdp_dashboard', '1');
+        }    
 
     function install() {
         global $wpdb;
@@ -75,8 +72,6 @@ class rdp_newsletter {
     function subscript($pos = "L") {
         switch ($pos) {
             case 'L' :
-                echo plugin_dir_path(__FILE__);
-                echo '<hr>';
                 $sx = $this->vmc_view('view\form_subscript_landscape.php',null);
                 break;
             default :
@@ -137,6 +132,11 @@ class rdp_newsletter {
     
     function vmc_view($page='',$data=array())
         {
+           $msg = array();
+           $msg['$name'] = 'Nome';
+           $msg['$email'] = 'e-mail';
+           $msg['$submit'] = 'Inscriver-se';
+            
            $f = plugin_dir_path(__FILE__).'../'.$page;
            $f = readfile($f);
            return($f); 
