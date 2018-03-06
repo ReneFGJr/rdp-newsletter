@@ -12,6 +12,7 @@ class Rdp_newsletters {
         {
             add_menu_page(__('RDP Newsletter', 'textdomain'), 'Newsletters', 'manage_options', 'rdp_newsletter_admin', 'rdp_newsletter_admin_home', plugins_url('rdp-newsletter/img/icon_newletter.png'), 60);
             add_submenu_page('rdp_newsletter_admin', 'DMP Templates', 'Drashboard', 'manage_options', 'rdp_dashboard', 'rdp_dashboard', '1');
+			add_submenu_page('rdp_newsletter_admin', 'RDP Manual', 'Manual', 'manage_options', 'rdp_manual', 'rdp_manual', '1');
         }    
 
     function install() {
@@ -78,16 +79,6 @@ class Rdp_newsletters {
                 $sx = readfile('view\form_subscript_portable.php');
                 break;
         }
-        $sx .= '
-        <style>
-            .rdp_newsletter_body
-                {
-                    background-color: #404080;
-                    color: #ffffff;
-                }
-            
-        </style>
-        ';
         return ($sx);
     }
 

@@ -17,7 +17,7 @@
 	</tr>
 	<tr>
 		<td style="padding: 10px;">
-		<input type="submit" name="news_name" class="btn btn-primary" value="Inscrever-se" style="width:100%;">
+		<input type="submit" name="news_name" class="btn btn-primary rdp_newsletter_body_submit" value="Inscrever-se" style="width:100%;">
 		</td>
 	</tr>
 	<tr>

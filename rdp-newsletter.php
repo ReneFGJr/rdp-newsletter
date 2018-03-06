@@ -22,6 +22,9 @@ define("rdp_newsletter_PLUGIN", "RDP-newsletters");
 define("rdp_newsletter_DIR", "/wp-content/plugins/rdp-newsletter/");
 define("rdp_newsletter_TABLE_TEMPLAT", "wp_rdp_newsletter");
 
+/* Shortcode ***************************************************************/
+add_shortcode( 'rdp_newsletter_form', 'rdp_newsletter_form' );
+
 require("model/rdp_newsletter_model.php");
 require("controller/rdp_newsletter_controller.php");
 
