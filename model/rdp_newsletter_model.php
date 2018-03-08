@@ -2,18 +2,37 @@
 
 class Rdp_newsletters {
     var $update_path = 'http://www.ufrgs.br/redd/plugin/rpd_newsletter/version.php';
-    
-    function dashboard()
-        {
-            
-        }
-    
-    function main_menu()
-        {
-            add_menu_page(__('RDP Newsletter', 'textdomain'), 'Newsletters', 'manage_options', 'rdp_newsletter_admin', 'rdp_newsletter_admin_home', plugins_url('rdp-newsletter/img/icon_newletter.png'), 60);
-            add_submenu_page('rdp_newsletter_admin', 'DMP Templates', 'Drashboard', 'manage_options', 'rdp_dashboard', 'rdp_dashboard', '1');
-			add_submenu_page('rdp_newsletter_admin', 'RDP Manual', 'Manual', 'manage_options', 'rdp_manual', 'rdp_manual', '1');
-        }    
+
+    function dashboard() {
+        $nw = new Rdp_newsletters();
+        $nw -> cab();
+        echo '<h1>Dashboard</h1>';
+    }
+
+    function manual() {
+        $nw = new Rdp_newsletters();
+        $nw -> cab();
+        echo '<h1>Manual</h1>';
+        echo $nw -> vmc_view("view/help.php");
+    }
+
+    function setting() {
+        $nw = new Rdp_newsletters();
+        $nw -> cab();
+        echo '<h1>Setting</h1>';
+    }
+
+    function main_menu() {
+        $active = '<b style="color:#f9845b">';
+        $active_a = '</b>';
+
+        add_menu_page('RDP Newsletter', 'RDP Newsletter', 'manage_options', 'rdp-dashboard', array(__CLASS__, 'dashboard'), plugins_url('rdp-newsletter/img/icon_newletter.png'), 5);
+
+        /* DASHBOARD */
+        add_submenu_page('rdp-dashboard', 'RDP simple' . ' Dashboard', ' Dashboard', 'manage_options', 'rdp-dashboard', array(__CLASS__, 'dashboard'));
+        add_submenu_page('rdp-dashboard', 'RDP simple' . ' Settings', ' Settings', 'manage_options', 'rdp-settings', array(__CLASS__, 'setting'));
+        add_submenu_page('rdp-dashboard', 'RDP simple' . ' Manual', ' Manual', 'manage_options', 'rdp-manual', array(__CLASS__, 'manual'));
+    }
 
     function install() {
         global $wpdb;
@@ -70,10 +89,43 @@ class Rdp_newsletters {
     }
 
     /************************** FORM SUBSCRIPT **********/
-    function subscript($pos = "L") {
+    function subscript($arg, $pos = "L") {
         switch ($pos) {
             case 'L' :
-                $sx = $this->vmc_view('view\form_subscript_landscape.php',null);
+                $sx = '
+                        <form methos="post">
+                        <table class="row rdp_newsletter_body" border=0 width="80%" style="margin: 5px; border-radius: 10px;">
+                            <tr>
+                                <td colspan=3 style="padding: 10px;"><h1>Newsletter</h1>
+                                <p>
+                                    Para receber atualizações
+                                </p></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;"><span style="font-size: 65%;">Nome completo</span>
+                                <input type="text" name="news_name" class="form-control" style="width:100%;" placeholder="Nome completo" value="' . $arg['name'] . '">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;"><span style="font-size: 65%;">email</span>
+                                <input type="text" name="news_email" class="form-control" style="width:100%;" placeholder="email*"  value="' . $arg['email'] . '">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">
+                                <input type="submit" name="news_action" class="btn btn-primary rdp_newsletter_body_submit" value="Inscrever-se" style="width:100%;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; font-size: 20%;">&nbsp;</td>
+                            </tr>
+                        </table>            
+                        </form>    
+                ';
+                $sx .= '</br><table class="row" border=0 width="80%" style="margin: 5px; border-radius: 10px;">' . cr();
+                $sx .= '<tr><td>' . cr();
+                $sx .= $arg[1] . cr();
+                $sx .= '</td></tr></table>' . cr();
                 break;
             default :
                 $sx = readfile('view\form_subscript_portable.php');
@@ -120,17 +172,81 @@ class Rdp_newsletters {
     function knowledge_list() {
         return ("X");
     }
-    
-    function vmc_view($page='',$data=array())
-        {
-           $msg = array();
-           $msg['$name'] = 'Nome';
-           $msg['$email'] = 'e-mail';
-           $msg['$submit'] = 'Inscriver-se';
-            
-           $f = plugin_dir_path(__FILE__).'../'.$page;
-           $f = readfile($f);
-           return($f); 
+
+    function vmc_view($page = '', $data = array()) {
+        $msg = array();
+        $msg['$name'] = 'Nome';
+        $msg['$email'] = 'e-mail';
+        $msg['$submit'] = 'Inscriver-se';
+
+        $f = plugin_dir_path(__FILE__) . '../' . $page;
+        $f = readfile($f);
+        return ($f);
+    }
+
+    function get($var = '') {
+        $rs = '';
+        if (isset($_POST[$var])) {
+            $rs = $_POST[$var];
         }
+        if (isset($_GET[$var])) {
+            $rs = $_GET[$var];
+        }
+        return ($rs);
+    }
+
+    function subscript_user($name, $email) {
+        global $wpdb;
+
+        $erro = 0;
+        $msg = '';
+
+        if (validaemail($email)) {
+            $msg = 'e-mail válido';
+        } else {
+            $erro = 630;
+            $msg = '
+            <div class="alert alert-danger">
+              <strong>Erro 630!</strong> e-mail inválido.
+            </div>';
+        }
+
+        /****************************************************************************/
+        if ($erro == 0) {
+
+            $sql = "select * from " . rdp_newsletter_TABLE_TEMPLAT . " 
+                            where n_email = '$email' ";
+            /*
+             id_n serial NOT NULL,
+             n_name char(100) NOT NULL,
+             n_email char(100),
+             n_status int(11),
+             n_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+             n_area text
+             )";
+             *
+             */
+            //            $wpdb -> query($sql);
+            $rst = $wpdb -> get_results($sql, OBJECT);
+            if (count($rst) == 0) {
+                $sql = "insert into " . rdp_newsletter_TABLE_TEMPLAT . "
+                        ( n_name, n_email, n_status, n_area)
+                        values
+                        ('$name','$email','1','')";
+                $wpdb -> query($sql);
+            } else {
+                $erro = 631;
+                $msg = '
+                    <div class="alert alert-danger">
+                      <strong>Erro ' . $erro . '!</strong> e-mail "' . $email . '" já existente em nosso Newsletter.
+                    </div>';
+
+            }
+
+        }
+
+        return ( array($erro, $msg));
+    }
+
 }
 ?>

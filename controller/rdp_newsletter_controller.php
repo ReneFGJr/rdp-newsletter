@@ -21,18 +21,6 @@ function rdp_newsletter_admin_home() {
     echo '<h1>ADMIN</h1>';
 }
 
-function rdp_dashboard() {
-    $nw = new Rdp_newsletters();
-    $nw -> cab();
-    echo '<h1>Dashboard</h1>';
-}
-
-function rdp_manual() {
-    $nw = new Rdp_newsletters();
-    $nw -> cab();
-    echo '<h1>Manual</h1>';
-	$nw->vmc_view("view/help.php");
-}
 
 /**********************************************************************************/
 /* active *************************************************************************/
@@ -64,7 +52,28 @@ function getRemote_version() {
 
 function rdp_newsletter_form() {
     $nw = new Rdp_newsletters;
-    $sx .= $nw -> subscript();
+    $name = $nw->get("news_name");
+    $email = $nw->get("news_email");
+    $action = $nw->get("news_action");
+    $erro = '';
+    $arg = array();
+    if (strlen($action) > 0)
+        {
+            $arg = $nw->subscript_user($name,$email);
+            $ok = $arg[0];
+            if ($ok==0)
+                {
+                    $sx = '
+                    <div class="alert alert-success">
+                      <strong>Successo!</strong> Obrigado '.$name.', seu e-mail '.$email.' foi incluído em nossa Newsletter.
+                    </div>
+                    ';
+                    return($sx);
+                }
+        }
+    $arg['name'] = $name;
+    $arg['email'] = $email;
+    $sx .= $nw -> subscript($arg);
     return ($sx);
 }
 

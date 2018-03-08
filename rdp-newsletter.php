@@ -25,6 +25,8 @@ define("rdp_newsletter_TABLE_TEMPLAT", "wp_rdp_newsletter");
 /* Shortcode ***************************************************************/
 add_shortcode( 'rdp_newsletter_form', 'rdp_newsletter_form' );
 
+require('model/versions.php');
+require("model/functions_model.php");
 require("model/rdp_newsletter_model.php");
 require("controller/rdp_newsletter_controller.php");
 
