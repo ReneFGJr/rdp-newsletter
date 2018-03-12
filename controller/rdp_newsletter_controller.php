@@ -56,7 +56,7 @@ function rdp_newsletter_form() {
     $email = $nw->get("news_email");
     $action = $nw->get("news_action");
     $erro = '';
-    $arg = array();
+    $arg = array(0,'');
     if (strlen($action) > 0)
         {
             $arg = $nw->subscript_user($name,$email);
@@ -69,11 +69,14 @@ function rdp_newsletter_form() {
                     </div>
                     ';
                     return($sx);
+                } else {
+                	
                 }
         }
     $arg['name'] = $name;
     $arg['email'] = $email;
     $sx .= $nw -> subscript($arg);
+	//$sx .= $arg[1];
     return ($sx);
 }
 

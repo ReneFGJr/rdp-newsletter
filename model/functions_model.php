@@ -23,6 +23,9 @@ if (!function_exists('validaemail')) {
             return false;
         }
     }
-
+if (!function_exists('cr')) {
+    function cr() {
+    	return(chr(13).chr(10));
+    } }
 }
 ?>

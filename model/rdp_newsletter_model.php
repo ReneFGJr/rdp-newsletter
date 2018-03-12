@@ -43,7 +43,7 @@ class Rdp_newsletters {
                   n_status int(11),
                   n_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                   n_area text
-                )";
+                );";
         $wpdb -> query($sqlMembros);
 
         $sqlMembros = "CREATE TABLE IF NOT EXISTS " . rdp_newsletter_TABLE_TEMPLAT . "_mailer (
@@ -52,7 +52,7 @@ class Rdp_newsletters {
                   nm_text text,
                   nm_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                   nm_group char(30)
-                )";
+                );";
         $wpdb -> query($sqlMembros);
 
         /* Plans */
@@ -60,12 +60,12 @@ class Rdp_newsletters {
                 id_ng serial NOT NULL,
                   ng_name char(200) NOT NULL,
                   ng_status int(11),
-                  ng_registered int(1)) NOT NULL DEFAULT 0,
+                  ng_registered int(1) NOT NULL DEFAULT 0,
                   ng_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
                 )";
         $wpdb -> query($sqlMembros);
 
-        return (1);
+        return ('');
     }
 
     function cab($sub = '') {
@@ -100,7 +100,9 @@ class Rdp_newsletters {
                                 <p>
                                     Para receber atualizações
                                 </p></td>
-                            </tr>
+                            </tr>';
+							
+				$sx .= '
                             <tr>
                                 <td style="padding: 10px;"><span style="font-size: 65%;">Nome completo</span>
                                 <input type="text" name="news_name" class="form-control" style="width:100%;" placeholder="Nome completo" value="' . $arg['name'] . '">
@@ -110,7 +112,8 @@ class Rdp_newsletters {
                                 <td style="padding: 10px;"><span style="font-size: 65%;">email</span>
                                 <input type="text" name="news_email" class="form-control" style="width:100%;" placeholder="email*"  value="' . $arg['email'] . '">
                                 </td>
-                            </tr>
+                            </tr>';
+				$sx .= '                            
                             <tr>
                                 <td style="padding: 10px;">
                                 <input type="submit" name="news_action" class="btn btn-primary rdp_newsletter_body_submit" value="Inscrever-se" style="width:100%;">
@@ -119,12 +122,16 @@ class Rdp_newsletters {
                             <tr>
                                 <td style="padding: 10px; font-size: 20%;">&nbsp;</td>
                             </tr>
-                        </table>            
-                        </form>    
-                ';
+                        </table>';
+				$sx .= '</form>';
+				
                 $sx .= '</br><table class="row" border=0 width="80%" style="margin: 5px; border-radius: 10px;">' . cr();
                 $sx .= '<tr><td>' . cr();
-                $sx .= $arg[1] . cr();
+				if (isset($arg[1]))
+					{
+							$sx .= $arg[1] . cr();		
+					}
+                
                 $sx .= '</td></tr></table>' . cr();
                 break;
             default :
@@ -215,18 +222,8 @@ class Rdp_newsletters {
         if ($erro == 0) {
 
             $sql = "select * from " . rdp_newsletter_TABLE_TEMPLAT . " 
-                            where n_email = '$email' ";
-            /*
-             id_n serial NOT NULL,
-             n_name char(100) NOT NULL,
-             n_email char(100),
-             n_status int(11),
-             n_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-             n_area text
-             )";
-             *
-             */
-            //            $wpdb -> query($sql);
+                            where n_email = '$email' ";           
+            $wpdb -> query($sql);
             $rst = $wpdb -> get_results($sql, OBJECT);
             if (count($rst) == 0) {
                 $sql = "insert into " . rdp_newsletter_TABLE_TEMPLAT . "
@@ -240,11 +237,9 @@ class Rdp_newsletters {
                     <div class="alert alert-danger">
                       <strong>Erro ' . $erro . '!</strong> e-mail "' . $email . '" já existente em nosso Newsletter.
                     </div>';
-
             }
 
         }
-
         return ( array($erro, $msg));
     }
 
